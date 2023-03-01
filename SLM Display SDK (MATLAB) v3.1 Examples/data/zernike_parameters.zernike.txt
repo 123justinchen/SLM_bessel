@@ -1,0 +1,15 @@
+RadiusPx	1102.000000
+TiltX	-5.000000
+TiltY	-5.000000
+Astig45	-3.179000
+Defocus	5.000000
+Astig0	-5.000000
+TrifoilX	-5.000000
+ComaX	-5.000000
+ComaY	0.000000
+TrifoilY	-5.000000
+QuadrafoilX	-3.982000
+Astig2nd45	-5.000000
+SphericalABB	-5.000000
+Astig2nd0	-5.000000
+QuadrafoilY	3.416000
