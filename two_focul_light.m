@@ -32,47 +32,46 @@ heds_slm_init;
 show_slm_preview(1.0);
 
 % Calculate e.g. a vertical blazed grating:
-blazePeriod = 10;
+blazePeriod1 = 15;
+blazePeriod2 = 20;
 
 phaseModulation = 2*pi; % radian
 dataWidth = heds_slm_width_px;
 dataHeight = heds_slm_height_px;
 phaseData1 = zeros(dataHeight, dataWidth, 'single');
-
+phaseData2 = phaseData1;
 for x = 1:dataWidth
-  grayValue = phaseModulation * (x-1) / blazePeriod;
+  grayValue = phaseModulation * (x-1) / blazePeriod1;
   for y = 1:dataHeight
     phaseData1(y, x) = grayValue;
   end
   % phaseData(:,x) = grayValue; % faster but less general
 end
 
-
-innerRadius = heds_slm_height_px / 3;
-centerX = 0;
-centerY = 0;
-
-x = (1:dataWidth) - dataWidth/2 - centerX;
-x2 = single(x.*x);
-  
-y = (1:dataHeight) - dataHeight/2 + centerY;
-y2 = y.*y;
-y2 = single(y2');
-
-% Calculate phase data matrix:
-phaseData2 = single(phaseModulation) * sqrt(ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius);
+for x = 1:dataWidth
+  grayValue = phaseModulation * (x-1) / blazePeriod2;
+  for y = 1:dataHeight
+    phaseData2(y, x) = grayValue;
+  end
+  % phaseData(:,x) = grayValue; % faster but less general
+end
 
 for t=0:5:380
     t
 
     phaseData3 = imrotate(phaseData1,t,"crop");
+    phaseData4 = imrotate(phaseData2,t,"crop");
     heds_utils_wait_ms(40);
-    phaseData = mod(phaseData3+phaseData2,phaseModulation);
+    phaseData = angle(exp(i*phaseData3)+exp(i*phaseData4));
     % Show phase data on SLM:
     heds_show_phasevalues(phaseData)
     heds_utils_wait_ms(40);
 
 end
+
+
+% Show phase data on SLM:
+
 
 % Please uncomment to close SDK at the end:
 % heds_close_slm

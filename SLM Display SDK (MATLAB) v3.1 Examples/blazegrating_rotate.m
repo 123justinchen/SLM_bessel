@@ -50,7 +50,7 @@ for x = 1:dataWidth
   end
   % phaseData(:,x) = grayValue; % faster but less general
 end
-phaseData = imrotate(phaseData,90);
+phaseData = imrotate(phaseData,90,"crop");
 % Show phase data on SLM:
 heds_show_phasevalues(phaseData)
 
