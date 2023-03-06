@@ -31,7 +31,7 @@ heds_slm_init;
 show_slm_preview(0.0);
 
 % Configure the lens properties:
-innerRadius = heds_slm_height_px / 3
+innerRadius = 1000
 centerX = 0
 centerY = 0
 
@@ -51,7 +51,7 @@ y2 = y.*y;
 y2 = single(y2');
 
 % Calculate phase data matrix:
-phaseData = single(phaseModulation) * (ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius*innerRadius);
+phaseData = -single(phaseModulation) * (ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius*innerRadius);
 
 % Show data on the SLM:
 heds_show_phasevalues(phaseData)

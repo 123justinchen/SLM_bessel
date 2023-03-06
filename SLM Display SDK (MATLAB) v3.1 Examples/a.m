@@ -46,8 +46,8 @@ for x = 1:dataWidth
   end
   % phaseData(:,x) = grayValue; % faster but less general
 end
-phaseData1 = imrotate(phaseData1,40,"crop");
-innerRadius1 = heds_slm_height_px/10;
+% phaseData1 = imrotate(phaseData1,40,"crop");
+innerRadius1 = heds_slm_height_px/3;
 innerRadius = heds_slm_height_px;
 centerX = 0;
 centerY = 0;
@@ -77,17 +77,31 @@ phaseData3 = -single(phaseModulation) * (ones(dataHeight, 1, 'single')*x2 + y2*o
 % % Show phase data on SLM:
 % heds_show_phasevalues(phaseData)
 
-for t=0:5:380
-    t
-
-    phaseData4 = imrotate(phaseData1,t,"crop");
-    heds_utils_wait_ms(40);
-    phaseData = mod(phaseData4+phaseData2+phaseData3,phaseModulation);
-    % Show phase data on SLM:
-    heds_show_phasevalues(phaseData)
-    heds_utils_wait_ms(40);
-
+for e= 1:20
+    for u= 1:5
+        u
+        for t=0:5:380
+            phaseData4 = imrotate(phaseData1,t,"crop");
+            heds_utils_wait_ms(40);
+        %     phaseData = mod(phaseData4+phaseData2+phaseData3,phaseModulation);
+            phaseData = mod(phaseData4+phaseData3+phaseData2,phaseModulation);
+            % Show phase data on SLM:
+            heds_show_phasevalues(phaseData);
+            heds_utils_wait_ms(40);
+        end
+        blazePeriod1 = blazePeriod + u;
+    
+        for x = 1:dataWidth
+        grayValue = phaseModulation * (x-1) / blazePeriod1;
+            for y = 1:dataHeight
+            phaseData1(y, x) = grayValue;
+            end
+        % phaseData(:,x) = grayValue; % faster but less general
+        end
+    end
+   
+innerRadius3 = innerRadius - 44*e
+phaseData3 = -single(phaseModulation) * (ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius3*innerRadius3);
 end
-
 % Please uncomment to close SDK at the end:
 % heds_close_slm
