@@ -47,8 +47,8 @@ for x = 1:dataWidth
   % phaseData(:,x) = grayValue; % faster but less general
 end
 % phaseData1 = imrotate(phaseData1,40,"crop");
-innerRadius1 = heds_slm_height_px/3;
-innerRadius = heds_slm_height_px;
+% innerRadius = heds_slm_height_px;
+innerRadius1 = heds_slm_height_px*2;
 centerX = 0;
 centerY = 0;
 
@@ -62,29 +62,29 @@ y2 = single(y2');
 % Calculate phase data matrix:
 phaseData2 = -single(phaseModulation) * sqrt(ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius1);
 
-x = (1:dataWidth) - dataWidth/2 - centerX;
-x2 = single(x.*x);
-  
-y = (1:dataHeight) - dataHeight/2 + centerY;
-y2 = y.*y;
-y2 = single(y2');
-
-% Calculate phase data matrix:
-phaseData3 = -single(phaseModulation) * (ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius*innerRadius);
+% x = (1:dataWidth) - dataWidth/2 - centerX;
+% x2 = single(x.*x);
+%   
+% y = (1:dataHeight) - dataHeight/2 + centerY;
+% y2 = y.*y;
+% y2 = single(y2');
+% 
+% % Calculate phase data matrix:
+% phaseData3 = -single(phaseModulation) * (ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius*innerRadius);
 
 
 % phaseData = mod(phaseData1+phaseData2+phaseData3,phaseModulation);
 % % Show phase data on SLM:
 % heds_show_phasevalues(phaseData)
 
-for e= 1:20
+for e= 1:32
     for u= 1:5
         u
         for t=0:5:380
             phaseData4 = imrotate(phaseData1,t,"crop");
             heds_utils_wait_ms(40);
         %     phaseData = mod(phaseData4+phaseData2+phaseData3,phaseModulation);
-            phaseData = mod(phaseData4+phaseData3+phaseData2,phaseModulation);
+            phaseData = mod(phaseData4+phaseData2,phaseModulation);
             % Show phase data on SLM:
             heds_show_phasevalues(phaseData);
             heds_utils_wait_ms(40);
@@ -100,8 +100,8 @@ for e= 1:20
         end
     end
    
-innerRadius3 = innerRadius - 44*e
-phaseData3 = -single(phaseModulation) * (ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius3*innerRadius3);
+innerRadius3 = innerRadius1 - 60*e
+phaseData2 = -single(phaseModulation) * sqrt(ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius1);
 end
 % Please uncomment to close SDK at the end:
 % heds_close_slm
