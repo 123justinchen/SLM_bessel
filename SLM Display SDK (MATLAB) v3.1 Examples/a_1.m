@@ -32,7 +32,7 @@ heds_slm_init;
 show_slm_preview(1.0);
 
 % Calculate e.g. a vertical blazed grating:
-blazePeriod = 15;
+blazePeriod = 9;
 
 phaseModulation = 2*pi; % radian
 dataWidth = heds_slm_width_px;
@@ -48,7 +48,7 @@ for x = 1:dataWidth
 end
 % phaseData1 = imrotate(phaseData1,40,"crop");
 % innerRadius = heds_slm_height_px;
-innerRadius1 = heds_slm_height_px*2;
+innerRadius1 = 1000;
 centerX = 0;
 centerY = 0;
 
@@ -60,7 +60,7 @@ y2 = y.*y;
 y2 = single(y2');
 
 % Calculate phase data matrix:
-phaseData2 = -single(phaseModulation) * sqrt(ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius1);
+phaseData2 = -single(phaseModulation) * (ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius1*innerRadius1);
 
 % x = (1:dataWidth) - dataWidth/2 - centerX;
 % x2 = single(x.*x);
@@ -77,19 +77,20 @@ phaseData2 = -single(phaseModulation) * sqrt(ones(dataHeight, 1, 'single')*x2 + 
 % % Show phase data on SLM:
 % heds_show_phasevalues(phaseData)
 
-for e= 1:32
-    for u= 1:5
-        u
-        for t=0:5:380
+% 实际20um一层   1000--400
+for e= 1:4
+    for u= 1:6
+        u1 = 0.5*u
+        for t=0:3:360
             phaseData4 = imrotate(phaseData1,t,"crop");
-            heds_utils_wait_ms(40);
+%             heds_utils_wait_ms(40);
         %     phaseData = mod(phaseData4+phaseData2+phaseData3,phaseModulation);
             phaseData = mod(phaseData4+phaseData2,phaseModulation);
             % Show phase data on SLM:
             heds_show_phasevalues(phaseData);
             heds_utils_wait_ms(40);
         end
-        blazePeriod1 = blazePeriod + u;
+        blazePeriod1 = blazePeriod + u1;
     
         for x = 1:dataWidth
         grayValue = phaseModulation * (x-1) / blazePeriod1;
@@ -100,8 +101,63 @@ for e= 1:32
         end
     end
    
-innerRadius3 = innerRadius1 - 60*e
-phaseData2 = -single(phaseModulation) * sqrt(ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius1);
+innerRadius1 = innerRadius1 - 150
+phaseData = -single(phaseModulation) * (ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius1*innerRadius1);
+end
+
+% 400--200
+for e= 1:5
+    for u= 0:6
+        u1 = 0.5*u
+        for t=0:3:360
+            phaseData4 = imrotate(phaseData1,t,"crop");
+%             heds_utils_wait_ms(40);
+        %     phaseData = mod(phaseData4+phaseData2+phaseData3,phaseModulation);
+            phaseData = mod(phaseData4+phaseData2,phaseModulation);
+            % Show phase data on SLM:
+            heds_show_phasevalues(phaseData);
+            heds_utils_wait_ms(40);
+        end
+        blazePeriod1 = blazePeriod + u1;
+    
+        for x = 1:dataWidth
+        grayValue = phaseModulation * (x-1) / blazePeriod1;
+            for y = 1:dataHeight
+            phaseData1(y, x) = grayValue;
+            end
+        % phaseData(:,x) = grayValue; % faster but less general
+        end
+    end
+   
+innerRadius1 = innerRadius1 - 40
+phaseData = -single(phaseModulation) * (ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius1*innerRadius1);
+end
+% 200--120
+for e= 1:10
+    for u= -1:6
+        u1 = 0.5*u
+        for t=0:3:360
+            phaseData4 = imrotate(phaseData1,t,"crop");
+%             heds_utils_wait_ms(40);
+        %     phaseData = mod(phaseData4+phaseData2+phaseData3,phaseModulation);
+            phaseData = mod(phaseData4+phaseData2,phaseModulation);
+            % Show phase data on SLM:
+            heds_show_phasevalues(phaseData);
+            heds_utils_wait_ms(40);
+        end
+        blazePeriod1 = blazePeriod + u1;
+    
+        for x = 1:dataWidth
+        grayValue = phaseModulation * (x-1) / blazePeriod1;
+            for y = 1:dataHeight
+            phaseData1(y, x) = grayValue;
+            end
+        % phaseData(:,x) = grayValue; % faster but less general
+        end
+    end
+   
+innerRadius1 = innerRadius1 - 8
+phaseData = -single(phaseModulation) * (ones(dataHeight, 1, 'single')*x2 + y2*ones(1, dataWidth, 'single')) / single(innerRadius1*innerRadius1);
 end
 % Please uncomment to close SDK at the end:
 % heds_close_slm

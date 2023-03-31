@@ -31,7 +31,7 @@ heds_slm_init;
 show_slm_preview(0.0);
 
 % Configure the lens properties:
-innerRadius = 1000
+innerRadius = 120
 centerX = 0
 centerY = 0
 
